@@ -5,7 +5,6 @@
 @section('content')
 <!-- ─── HERO ──────────────────────────────────────────────────────────────── -->
 <section class="hero" id="beranda">
-    <div class="hero-pattern"></div>
     <div class="hero-orbs">
         <div class="hero-orb hero-orb-1"></div>
         <div class="hero-orb hero-orb-2"></div>
@@ -38,7 +37,7 @@
                 </div>
             </div>
             <div class="hero-actions">
-                <a href="#ppdb" class="btn-primary-hero">
+                <a href="{{ route('register') }}" class="btn-primary-hero">
                     <i class="bi bi-pencil-square"></i> Daftar PPDB 2026/2027
                 </a>
                 <a href="#program" class="btn-outline-hero">
@@ -297,7 +296,7 @@
                 <p>Tes seleksi online berbasis komputer. Dua gelombang pendaftaran tersedia.</p>
             </div>
         </div>
-        <a href="{{ route('login') }}" class="btn-ppdb-register reveal">
+        <a href="{{ route('register') }}" class="btn-ppdb-register reveal">
             <i class="bi bi-pencil-square"></i> Daftar Sekarang — Gratis
         </a>
     </div>

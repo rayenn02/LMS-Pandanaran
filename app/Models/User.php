@@ -86,4 +86,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizAttempt::class, 'student_id');
     }
+
+    public function class(): BelongsTo
+    {
+        return $this->belongsTo(SchoolClass::class, 'class_id');
+    }
+
+    public function examCards(): HasMany
+    {
+        return $this->hasMany(ExamCard::class, 'user_id');
+    }
 }

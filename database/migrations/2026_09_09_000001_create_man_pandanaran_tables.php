@@ -145,48 +145,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 12. Fee Types
-        Schema::create('fee_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->decimal('default_amount', 12, 2);
-            $table->boolean('is_monthly')->default(false);
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
 
-        // 13. Student Bills
-        Schema::create('student_bills', function (Blueprint $table) {
-            $table->id();
-            $table->string('bill_code')->unique();
-            $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('fee_type_id')->constrained('fee_types')->cascadeOnDelete();
-            $table->string('title');
-            $table->integer('month')->nullable(); // 1-12
-            $table->integer('year')->nullable();
-            $table->decimal('amount', 12, 2);
-            $table->date('due_date');
-            $table->string('status')->default('unpaid'); // unpaid, pending, paid
-            $table->timestamps();
-        });
-
-        // 14. Payments
-        Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-            $table->string('payment_code')->unique();
-            $table->foreignId('bill_id')->constrained('student_bills')->cascadeOnDelete();
-            $table->decimal('amount_paid', 12, 2);
-            $table->string('payment_method'); // qris, bca_va, bri_va, mandiri_va, manual_transfer, cash
-            $table->string('va_number')->nullable();
-            $table->string('proof_file')->nullable();
-            $table->text('notes')->nullable();
-            $table->string('status')->default('pending'); // pending, success, rejected
-            $table->dateTime('paid_at')->nullable();
-            $table->dateTime('verified_at')->nullable();
-            $table->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
-        });
 
         // 15. Posts / News & Announcements
         Schema::create('posts', function (Blueprint $table) {
@@ -221,9 +180,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('contact_messages');
         Schema::dropIfExists('posts');
-        Schema::dropIfExists('payments');
-        Schema::dropIfExists('student_bills');
-        Schema::dropIfExists('fee_types');
+
         Schema::dropIfExists('attendance_records');
         Schema::dropIfExists('attendances');
         Schema::dropIfExists('quiz_attempts');

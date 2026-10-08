@@ -62,16 +62,6 @@
             <div class="stat-label">Kelas / Rombel</div>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon si-red"><i class="bi bi-credit-card-fill"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $pending_payments }}</div>
-            <div class="stat-label">Pembayaran Pending</div>
-            @if($pending_payments > 0)
-            <a href="{{ route('payment.finance.index') }}"><div class="stat-sub">Verifikasi sekarang →</div></a>
-            @endif
-        </div>
-    </div>
 </div>
 <div class="cards-grid-2">
     <div class="card">
@@ -225,13 +215,6 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon si-gold"><i class="bi bi-cash-stack"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">Rp {{ number_format($total_unpaid, 0, ',', '.') }}</div>
-            <div class="stat-label">Tagihan Tertunggak ({{ $unpaid_bills->count() }})</div>
-        </div>
-    </div>
-    <div class="stat-card">
         <div class="stat-icon si-purple"><i class="bi bi-clipboard2-check-fill"></i></div>
         <div class="stat-body">
             <div class="stat-num">{{ $recent_attempts->count() }}</div>
@@ -308,29 +291,7 @@
     </div>
 </div>
 
-@if($unpaid_bills->count())
-<div class="card" style="margin-bottom: 1.25rem; border-left: 4px solid #f59e0b;">
-    <div class="card-header">
-        <h3>⚠️ Tagihan Belum Lunas</h3>
-        <a href="{{ route('payment.student.bills') }}" class="btn btn-gold btn-sm">Bayar Sekarang</a>
-    </div>
-    <div class="card-body" style="display: flex; flex-direction: column; gap: 0.75rem;">
-        @foreach($unpaid_bills as $bill)
-        <div class="bill-card">
-            <div class="bill-icon" style="background: {{ $bill->status === 'pending' ? '#fef3c7' : '#fee2e2' }}; color: {{ $bill->status === 'pending' ? '#d97706' : '#dc2626' }};">
-                <i class="bi bi-{{ $bill->status === 'pending' ? 'hourglass-split' : 'receipt' }}"></i>
-            </div>
-            <div class="bill-details">
-                <h4>{{ $bill->title }}</h4>
-                <div class="amount">Rp {{ number_format($bill->amount, 0, ',', '.') }}</div>
-                <div class="due">Jatuh tempo: {{ $bill->due_date->isoFormat('D MMMM YYYY') }}</div>
-            </div>
-            <span class="badge badge-{{ $bill->status === 'pending' ? 'warning' : 'danger' }}">{{ ucfirst($bill->status) }}</span>
-        </div>
-        @endforeach
-    </div>
-</div>
-@endif
+
 
 <div class="card">
     <div class="card-header">
@@ -361,78 +322,6 @@
 </div>
 @endif
 
-{{-- ─── BENDAHARA DASHBOARD ─────────────────────────────────────────────── --}}
-@if($user->isBendahara())
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon si-red"><i class="bi bi-hourglass-split"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $total_pending }}</div>
-            <div class="stat-label">Menunggu Verifikasi</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon si-emerald"><i class="bi bi-graph-up-arrow"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">Rp {{ number_format($total_income_month, 0, ',', '.') }}</div>
-            <div class="stat-label">Pemasukan Bulan Ini</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon si-gold"><i class="bi bi-check-circle-fill"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $total_paid_bills }}</div>
-            <div class="stat-label">Tagihan Lunas</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon si-purple"><i class="bi bi-x-circle-fill"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $total_unpaid_bills }}</div>
-            <div class="stat-label">Tagihan Belum Bayar</div>
-        </div>
-    </div>
-</div>
-<div class="card">
-    <div class="card-header">
-        <h3>🔔 Pembayaran Menunggu Verifikasi</h3>
-        <a href="{{ route('payment.finance.index') }}" class="btn btn-primary btn-sm">Lihat Semua</a>
-    </div>
-    <div class="card-body" style="padding: 0;">
-        <div class="table-wrapper">
-            <table>
-                <thead><tr><th>Kode</th><th>Siswa</th><th>Jenis</th><th>Jumlah</th><th>Metode</th><th>Aksi</th></tr></thead>
-                <tbody>
-                    @forelse($pending_payments->take(5) as $p)
-                    <tr>
-                        <td style="font-size: 0.75rem; color: #94a3b8;">{{ $p->payment_code }}</td>
-                        <td><div style="font-weight: 600;">{{ $p->bill->student->name }}</div></td>
-                        <td>{{ $p->bill->feeType->name }}</td>
-                        <td style="font-weight: 700; color: #047857;">Rp {{ number_format($p->amount_paid, 0, ',', '.') }}</td>
-                        <td><span class="badge badge-info">{{ str_replace('_', ' ', $p->payment_method) }}</span></td>
-                        <td>
-                            <div style="display: flex; gap: 0.4rem;">
-                                <form action="{{ route('payment.finance.verify', $p->id) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <input type="hidden" name="action" value="approve">
-                                    <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Verifikasi pembayaran ini?')"><i class="bi bi-check-lg"></i></button>
-                                </form>
-                                <form action="{{ route('payment.finance.verify', $p->id) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <input type="hidden" name="action" value="reject">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tolak pembayaran ini?')"><i class="bi bi-x-lg"></i></button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 2rem;">✅ Tidak ada pembayaran yang menunggu verifikasi.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-@endif
+
 
 @endsection

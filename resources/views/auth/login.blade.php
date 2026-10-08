@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | MAN Pandanaran</title>
+    <title>Login | Madrasah Aliyah Sunan Pandanaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -11,14 +11,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 70%, #0d9488 100%);
+            background: linear-gradient(150deg, #022c22 0%, #064e3b 45%, #065f46 75%, #0a7060 100%);
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
             padding: 2rem; position: relative; overflow: hidden;
-        }
-        .bg-pattern {
-            position: fixed; inset: 0; opacity: 0.06;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
-            pointer-events: none;
         }
         .orb {
             position: fixed; border-radius: 50%;
@@ -112,7 +107,6 @@
     </style>
 </head>
 <body>
-<div class="bg-pattern"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
@@ -123,50 +117,15 @@
             <div class="login-left-brand">
                 <div class="login-logo">M</div>
                 <div>
-                    <div class="name">MAN Pandanaran</div>
+                    <div class="name">Madrasah Aliyah Sunan Pandanaran</div>
                     <div class="sub">Sistem Informasi Madrasah</div>
                 </div>
             </div>
             <h2>Selamat Datang di Portal Digital Madrasah</h2>
-            <p>Akses e-learning, tagihan SPP, jadwal pelajaran, dan seluruh layanan madrasah dalam satu platform terpadu.</p>
+            <p>Akses e-learning, jadwal pelajaran, materi pembelajaran, dan seluruh layanan madrasah dalam satu platform terpadu.</p>
         </div>
 
-        <div class="quick-logins">
-            <h5>🔑 Demo Akun Cepat</h5>
-            <button class="quick-btn" onclick="setLogin('admin@manpandanaran.sch.id','password')">
-                <i class="bi bi-shield-fill-check"></i>
-                <span>
-                    <div style="font-weight: 600;">Administrator</div>
-                    <div style="font-size: 0.7rem; opacity: 0.7;">admin@manpandanaran.sch.id</div>
-                </span>
-                <span class="q-role">Admin</span>
-            </button>
-            <button class="quick-btn" onclick="setLogin('guru@manpandanaran.sch.id','password')">
-                <i class="bi bi-person-badge-fill"></i>
-                <span>
-                    <div style="font-weight: 600;">Ust. Ahmad Dahlan, S.Pd.I</div>
-                    <div style="font-size: 0.7rem; opacity: 0.7;">guru@manpandanaran.sch.id</div>
-                </span>
-                <span class="q-role">Guru</span>
-            </button>
-            <button class="quick-btn" onclick="setLogin('siswa@manpandanaran.sch.id','password')">
-                <i class="bi bi-person-fill"></i>
-                <span>
-                    <div style="font-weight: 600;">Muhammad Fatih Al-Ayyubi</div>
-                    <div style="font-size: 0.7rem; opacity: 0.7;">siswa@manpandanaran.sch.id</div>
-                </span>
-                <span class="q-role">Siswa</span>
-            </button>
-            <button class="quick-btn" onclick="setLogin('bendahara@manpandanaran.sch.id','password')">
-                <i class="bi bi-wallet2"></i>
-                <span>
-                    <div style="font-weight: 600;">Hj. Rohmah Wardani, S.E.</div>
-                    <div style="font-size: 0.7rem; opacity: 0.7;">bendahara@manpandanaran.sch.id</div>
-                </span>
-                <span class="q-role">Bendahara</span>
-            </button>
-            <div style="font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-top: 0.5rem;">Password semua akun: <strong style="color: rgba(255,255,255,0.7);">password</strong></div>
-        </div>
+        {{-- Demo Akun Cepat disembunyikan --}}
     </div>
 
     <!-- Right panel -->
@@ -201,9 +160,12 @@
                     </button>
                 </div>
             </div>
-            <div class="checkbox-row">
-                <input type="checkbox" name="remember" id="remember">
-                <label for="remember">Ingat saya di perangkat ini</label>
+            <div class="checkbox-row" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Ingat saya</label>
+                </div>
+                <a href="{{ route('password.request') }}" style="font-size: 0.8rem; color: #047857; font-weight: 600; text-decoration: none;">Lupa Password?</a>
             </div>
             <button type="submit" class="btn-login" id="loginBtn">
                 <i class="bi bi-box-arrow-in-right"></i> Masuk ke Sistem

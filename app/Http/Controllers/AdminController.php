@@ -8,6 +8,8 @@ use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\Post;
 use App\Models\FeeType;
+use App\Models\Registration;
+use App\Models\ContactMessage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -157,5 +159,109 @@ class AdminController extends Controller
         $request->validate(['name' => 'required|string|max:50', 'academic_year' => 'required|string']);
         SchoolClass::create($request->only('name', 'academic_year', 'homeroom_teacher_name'));
         return back()->with('success', 'Kelas berhasil ditambahkan!');
+    }
+
+    // ─── PPDB REGISTRATIONS ─────────────────────────────────────────────────────
+
+    public function registrations(Request $request)
+    {
+        $query = Registration::query();
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('email', 'like', "%{$request->search}%")
+                  ->orWhere('nisn', 'like', "%{$request->search}%")
+                  ->orWhere('school', 'like', "%{$request->search}%");
+            });
+        }
+
+        $registrations = $query->latest()->paginate(20);
+        $stats = [
+            'total'    => Registration::count(),
+            'pending'  => Registration::where('status', 'pending')->count(),
+            'approved' => Registration::where('status', 'approved')->count(),
+            'rejected' => Registration::where('status', 'rejected')->count(),
+        ];
+        $classes = SchoolClass::all();
+
+        return view('admin.registrations.index', compact('registrations', 'stats', 'classes'));
+    }
+
+    public function approveRegistration(Request $request, $id)
+    {
+        $reg = Registration::findOrFail($id);
+
+        if ($reg->status !== 'pending') {
+            return back()->with('error', 'Pendaftaran ini sudah diproses sebelumnya.');
+        }
+
+        $request->validate([
+            'class_id' => 'required|exists:classes,id',
+        ], [
+            'class_id.required' => 'Silakan pilih kelas untuk calon siswa ini.',
+        ]);
+
+        // Create user account from registration data
+        User::create([
+            'name'            => $reg->name,
+            'email'           => $reg->email,
+            'password'        => $reg->password, // already hashed
+            'role'            => 'siswa',
+            'identity_number' => $reg->nisn,
+            'phone'           => $reg->phone,
+            'gender'          => 'L', // default, admin can edit later
+            'class_id'        => $request->class_id,
+        ]);
+
+        $reg->update([
+            'status'      => 'approved',
+            'admin_notes' => $request->admin_notes,
+        ]);
+
+        return back()->with('success', "Pendaftaran {$reg->name} telah DITERIMA dan akun siswa berhasil dibuat!");
+    }
+
+    public function rejectRegistration(Request $request, $id)
+    {
+        $reg = Registration::findOrFail($id);
+
+        if ($reg->status !== 'pending') {
+            return back()->with('error', 'Pendaftaran ini sudah diproses sebelumnya.');
+        }
+
+        $reg->update([
+            'status'      => 'rejected',
+            'admin_notes' => $request->admin_notes ?? 'Ditolak oleh panitia.',
+        ]);
+
+        return back()->with('success', "Pendaftaran {$reg->name} telah DITOLAK.");
+    }
+
+    public function deleteRegistration($id)
+    {
+        Registration::findOrFail($id)->delete();
+        return back()->with('success', 'Data pendaftaran berhasil dihapus.');
+    }
+
+    // ─── CONTACT MESSAGES ──────────────────────────────────────────────────────
+
+    public function messages(Request $request)
+    {
+        $messages = ContactMessage::latest()->paginate(20);
+        
+        // Mark all as read when viewed (optional, but a simple way is just list them)
+        // Let's just list them
+        
+        return view('admin.messages.index', compact('messages'));
+    }
+
+    public function deleteMessage($id)
+    {
+        ContactMessage::findOrFail($id)->delete();
+        return back()->with('success', 'Pesan berhasil dihapus.');
     }
 }
