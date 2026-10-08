@@ -15,6 +15,7 @@ use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\QuizAttempt;
 use App\Models\AssignmentSubmission;
+use App\Models\ExamGrade;
 
 class DashboardController extends Controller
 {
@@ -35,6 +36,8 @@ class DashboardController extends Controller
 
     private function adminData(): array
     {
+        $avgScore = AssignmentSubmission::where('status', 'graded')->avg('score');
+
         return [
             'total_siswa'   => User::where('role', 'siswa')->count(),
             'total_guru'    => User::where('role', 'guru')->count(),
@@ -42,6 +45,7 @@ class DashboardController extends Controller
             'total_mapel'   => Subject::count(),
             'total_berita'  => Post::count(),
             'pending_payments' => Payment::where('status', 'pending')->count(),
+            'avg_score'     => round($avgScore ?? 0, 1),
             'recent_posts'  => Post::with('author')->latest('published_at')->take(5)->get(),
             'recent_users'  => User::latest()->take(5)->get(),
         ];
@@ -55,11 +59,16 @@ class DashboardController extends Controller
 
         $courseIds = $courses->pluck('id');
 
+        $avgScore = AssignmentSubmission::whereHas('assignment', function($q) use ($courseIds) {
+            $q->whereIn('course_id', $courseIds);
+        })->where('status', 'graded')->avg('score');
+
         return [
             'courses'              => $courses,
             'total_courses'        => $courses->count(),
             'total_assignments'    => Assignment::whereIn('course_id', $courseIds)->count(),
             'total_quizzes'        => Quiz::whereIn('course_id', $courseIds)->count(),
+            'avg_score'            => round($avgScore ?? 0, 1),
             'pending_submissions'  => AssignmentSubmission::whereHas('assignment', function($q) use ($courseIds) {
                 $q->whereIn('course_id', $courseIds);
             })->where('status', 'submitted')->count(),
@@ -86,15 +95,62 @@ class DashboardController extends Controller
             ->where('status', 'completed')
             ->latest()->take(3)->get();
 
+        // Hitung Rata-Rata Nilai Tugas
+        $assignmentAvg = AssignmentSubmission::where('student_id', $user->id)
+            ->where('status', 'graded')
+            ->whereNotNull('score')
+            ->avg('score');
+
+        // Hitung Rata-Rata Nilai Kuis
+        $quizAvg = QuizAttempt::where('student_id', $user->id)
+            ->where('status', 'completed')
+            ->whereNotNull('score')
+            ->avg('score');
+
+        // Hitung Rata-Rata Nilai UTS & UAS
+        $utsAvg = ExamGrade::where('student_id', $user->id)
+            ->whereNotNull('score_uts')
+            ->avg('score_uts');
+
+        $uasAvg = ExamGrade::where('student_id', $user->id)
+            ->whereNotNull('score_uas')
+            ->avg('score_uas');
+
+        $assignmentAvg = $assignmentAvg ? round($assignmentAvg, 1) : null;
+        $quizAvg       = $quizAvg ? round($quizAvg, 1) : null;
+        $utsAvg        = $utsAvg ? round($utsAvg, 1) : null;
+        $uasAvg        = $uasAvg ? round($uasAvg, 1) : null;
+
+        $validScores = array_filter([$assignmentAvg, $quizAvg, $utsAvg, $uasAvg], fn($val) => $val !== null);
+
+        if (count($validScores) > 0) {
+            $overallAvg = round(array_sum($validScores) / count($validScores), 1);
+            $predicate = match(true) {
+                $overallAvg >= 90 => 'Sangat Baik (A)',
+                $overallAvg >= 80 => 'Baik (B)',
+                $overallAvg >= 70 => 'Cukup (C)',
+                default           => 'Perlu Perbaikan',
+            };
+        } else {
+            $overallAvg = null;
+            $predicate = 'Belum Ada Nilai';
+        }
+
         return [
-            'courses'         => Course::with(['subject', 'teacher'])
+            'courses'             => Course::with(['subject', 'teacher'])
                 ->whereIn('id', $courseIds)->get(),
-            'total_courses'   => count($courseIds),
-            'unpaid_bills'    => $unpaidBills,
-            'total_unpaid'    => $unpaidBills->sum('amount'),
-            'recent_attempts' => $recentAttempts,
+            'total_courses'       => count($courseIds),
+            'unpaid_bills'        => $unpaidBills,
+            'total_unpaid'        => $unpaidBills->sum('amount'),
+            'recent_attempts'     => $recentAttempts,
             'pending_submissions' => AssignmentSubmission::where('student_id', $user->id)
                 ->where('status', 'submitted')->count(),
+            'assignment_avg'      => $assignmentAvg !== null ? $assignmentAvg : '-',
+            'quiz_avg'            => $quizAvg !== null ? $quizAvg : '-',
+            'uts_avg'             => $utsAvg !== null ? $utsAvg : '-',
+            'uas_avg'             => $uasAvg !== null ? $uasAvg : '-',
+            'overall_avg'         => $overallAvg !== null ? $overallAvg : '-',
+            'grade_predicate'     => $predicate,
         ];
     }
 

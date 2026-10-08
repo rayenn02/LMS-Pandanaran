@@ -25,12 +25,13 @@
             <p style="margin-top: 0.75rem; font-size: 0.875rem; color: rgba(255,255,255,0.75); max-width: 700px; line-height: 1.6;">{{ $course->description }}</p>
             @endif
         </div>
-        @if($user->isGuru() && $course->teacher_id === $user->id)
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="{{ route('lms.exam_grades', $course->id) }}" class="btn btn-sm" style="background: #10b981; color: white; border: none; font-weight: 600;"><i class="bi bi-award-fill"></i> Nilai UTS & UAS</a>
+            @if($user->isGuru() && $course->teacher_id === $user->id)
             <a href="{{ route('lms.material.create', $course->id) }}" class="btn btn-gold btn-sm"><i class="bi bi-plus-lg"></i> Tambah Materi</a>
             <a href="{{ route('lms.assignment.create', $course->id) }}" class="btn btn-outline btn-sm" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: white;"><i class="bi bi-plus-lg"></i> Buat Tugas</a>
+            @endif
         </div>
-        @endif
     </div>
 </div>
 

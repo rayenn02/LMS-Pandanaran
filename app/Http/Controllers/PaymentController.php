@@ -38,7 +38,73 @@ class PaymentController extends Controller
                 ->with('info', 'Tagihan ini sudah lunas.');
         }
 
-        return view('payments.student.pay', compact('bill', 'user'));
+        // Cari pembayaran pending teranyar atau buat baru
+        $payment = Payment::where('bill_id', $bill->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        $snapToken = $payment?->snap_token;
+        $orderId = $payment?->payment_code ?? ('PAY-' . $bill->id . '-' . time());
+
+        // Inisialisasi Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
+        \Midtrans\Config::$isSanitized = config('services.midtrans.is_sanitized');
+        \Midtrans\Config::$is3ds = config('services.midtrans.is_3ds');
+
+        if (!$snapToken) {
+            $params = [
+                'transaction_details' => [
+                    'order_id'     => $orderId,
+                    'gross_amount' => (int) $bill->amount,
+                ],
+                'customer_details' => [
+                    'first_name' => $user->name,
+                    'email'      => $user->email,
+                    'phone'      => $user->phone ?? '081234567890',
+                ],
+                'item_details' => [
+                    [
+                        'id'       => $bill->bill_code,
+                        'price'    => (int) $bill->amount,
+                        'quantity' => 1,
+                        'name'     => substr($bill->title, 0, 50),
+                    ]
+                ],
+                'enabled_payments' => [
+                    'qris', 'gopay', 'shopeepay',
+                    'bca_va', 'bri_va', 'bni_va', 'mandiri_va', 'permata_va', 'cimb_va'
+                ]
+            ];
+
+            try {
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+            } catch (\Exception $e) {
+                // Fallback token jika demo key belum valid di Midtrans dashboard
+                $snapToken = 'DEMO-SNAP-TOKEN-' . Str::random(16);
+            }
+
+            if (!$payment) {
+                $payment = Payment::create([
+                    'payment_code'   => $orderId,
+                    'bill_id'        => $bill->id,
+                    'amount_paid'    => $bill->amount,
+                    'payment_method' => 'midtrans_va_qris',
+                    'snap_token'     => $snapToken,
+                    'status'         => 'pending',
+                    'paid_at'        => now(),
+                ]);
+            } else {
+                $payment->update([
+                    'snap_token' => $snapToken,
+                ]);
+            }
+        }
+
+        $clientKey = config('services.midtrans.client_key');
+
+        return view('payments.student.pay', compact('bill', 'user', 'payment', 'snapToken', 'clientKey'));
     }
 
     public function processPayment(Request $request, $billId)
@@ -50,50 +116,107 @@ class PaymentController extends Controller
             return redirect()->route('payment.student.bills')->with('info', 'Tagihan sudah lunas.');
         }
 
-        $request->validate([
-            'payment_method' => 'required|in:qris,bca_va,bri_va,mandiri_va,bsi_va,manual_transfer',
-            'proof_file'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-        ]);
+        $payment = Payment::where('bill_id', $bill->id)->latest()->first();
 
-        $proofPath = null;
-        if ($request->hasFile('proof_file')) {
-            $proofPath = $request->file('proof_file')->store('proofs', 'public');
+        if ($request->has('result_data')) {
+            $result = json_decode($request->result_data, true);
+            $paymentType = $result['payment_type'] ?? 'midtrans';
+            $transactionId = $result['transaction_id'] ?? null;
+            $transactionStatus = $result['transaction_status'] ?? 'pending';
+
+            if ($payment) {
+                $statusMap = [
+                    'settlement' => 'success',
+                    'capture'    => 'success',
+                    'pending'    => 'pending',
+                    'deny'       => 'rejected',
+                    'expire'     => 'rejected',
+                    'cancel'     => 'rejected',
+                ];
+
+                $newStatus = $statusMap[$transactionStatus] ?? 'pending';
+
+                $payment->update([
+                    'payment_method'          => $paymentType,
+                    'midtrans_transaction_id' => $transactionId,
+                    'payment_type'            => $paymentType,
+                    'status'                  => $newStatus,
+                    'verified_at'             => $newStatus === 'success' ? now() : null,
+                ]);
+
+                if ($newStatus === 'success') {
+                    $bill->update(['status' => 'paid']);
+                } else {
+                    $bill->update(['status' => 'pending']);
+                }
+
+                return redirect()->route('payment.student.confirmation', $payment->id)
+                    ->with('success', 'Status pembayaran berhasil diperbarui!');
+            }
         }
 
-        $vaNumber = null;
-        $method = $request->payment_method;
+        return redirect()->route('payment.student.bills');
+    }
 
-        if (in_array($method, ['bca_va', 'bri_va', 'mandiri_va', 'bsi_va'])) {
-            $prefix = match($method) {
-                'bca_va'     => '80777',
-                'bri_va'     => '26215',
-                'mandiri_va' => '88808',
-                'bsi_va'     => '91234',
-                default      => '00000',
-            };
-            $vaNumber = $prefix . str_pad($bill->id, 10, '0', STR_PAD_LEFT);
-        } elseif ($method === 'qris') {
-            $vaNumber = 'QRIS-NMID-MAN-' . strtoupper(Str::random(10));
+    /**
+     * Webhook Callback Notification dari Midtrans
+     */
+    public function midtransNotification(Request $request)
+    {
+        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
+
+        try {
+            $notif = new \Midtrans\Notification();
+
+            $transaction = $notif->transaction_status;
+            $type = $notif->payment_type;
+            $orderId = $notif->order_id;
+            $fraud = $notif->fraud_status;
+
+            $payment = Payment::where('payment_code', $orderId)->first();
+
+            if (!$payment) {
+                return response()->json(['message' => 'Payment record not found'], 404);
+            }
+
+            if ($transaction == 'capture') {
+                if ($type == 'credit_card') {
+                    if ($fraud == 'challenge') {
+                        $payment->update(['status' => 'pending']);
+                    } else {
+                        $payment->update(['status' => 'success', 'verified_at' => now()]);
+                        $payment->bill->update(['status' => 'paid']);
+                    }
+                }
+            } else if ($transaction == 'settlement') {
+                $payment->update([
+                    'status'                  => 'success',
+                    'payment_type'            => $type,
+                    'midtrans_transaction_id' => $notif->transaction_id ?? null,
+                    'verified_at'             => now(),
+                ]);
+                $payment->bill->update(['status' => 'paid']);
+            } else if ($transaction == 'pending') {
+                $payment->update([
+                    'status'                  => 'pending',
+                    'payment_type'            => $type,
+                    'midtrans_transaction_id' => $notif->transaction_id ?? null,
+                ]);
+                $payment->bill->update(['status' => 'pending']);
+            } else if (in_array($transaction, ['deny', 'expire', 'cancel'])) {
+                $payment->update([
+                    'status'                  => 'rejected',
+                    'payment_type'            => $type,
+                    'midtrans_transaction_id' => $notif->transaction_id ?? null,
+                ]);
+                $payment->bill->update(['status' => 'unpaid']);
+            }
+
+            return response()->json(['message' => 'Notification processed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $paymentCode = 'PAY-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
-
-        $payment = Payment::create([
-            'payment_code'   => $paymentCode,
-            'bill_id'        => $bill->id,
-            'amount_paid'    => $bill->amount,
-            'payment_method' => $method,
-            'va_number'      => $vaNumber,
-            'proof_file'     => $proofPath,
-            'notes'          => $request->notes,
-            'status'         => 'pending',
-            'paid_at'        => now(),
-        ]);
-
-        $bill->update(['status' => 'pending']);
-
-        return redirect()->route('payment.student.confirmation', $payment->id)
-            ->with('success', 'Pembayaran berhasil diajukan! Menunggu verifikasi bendahara.');
     }
 
     public function confirmation($paymentId)

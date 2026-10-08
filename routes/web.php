@@ -18,6 +18,9 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Midtrans Webhook Notification Callback
+Route::post('/pembayaran/midtrans/notification', [PaymentController::class, 'midtransNotification'])->name('payment.midtrans.notification');
+
 // ─── AUTHENTICATED ROUTES ─────────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
 
@@ -60,6 +63,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kelas/{courseId}/presensi', [LmsController::class, 'attendance'])->name('attendance');
         Route::post('/kelas/{courseId}/presensi', [LmsController::class, 'storeAttendance'])
             ->middleware('role:guru,admin')->name('attendance.store');
+
+        // Exam Grades (UTS & UAS)
+        Route::get('/kelas/{courseId}/nilai-ujian', [LmsController::class, 'showExamGrades'])->name('exam_grades');
+        Route::post('/kelas/{courseId}/nilai-ujian', [LmsController::class, 'storeExamGrades'])
+            ->middleware('role:guru,admin')->name('exam_grades.store');
     });
 
     // ─── PAYMENT (Siswa) ─────────────────────────────────────────────────────

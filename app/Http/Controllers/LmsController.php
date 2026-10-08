@@ -12,6 +12,8 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\Attendance;
 use App\Models\AttendanceRecord;
+use App\Models\ExamGrade;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class LmsController extends Controller
@@ -294,6 +296,60 @@ class LmsController extends Controller
         }
 
         return back()->with('success', 'Presensi berhasil disimpan!');
+    }
+
+    // ─── EXAM GRADES (UTS & UAS) ──────────────────────────────────────────────────
+
+    public function showExamGrades($courseId)
+    {
+        $user = Auth::user();
+        $course = Course::with(['subject', 'schoolClass', 'teacher'])->findOrFail($courseId);
+
+        $students = User::where('role', 'siswa')
+            ->where('class_id', $course->class_id)
+            ->orderBy('name')
+            ->get();
+
+        $examGrades = ExamGrade::where('course_id', $courseId)
+            ->get()
+            ->keyBy('student_id');
+
+        return view('lms.exam_grades.index', compact('course', 'students', 'examGrades', 'user'));
+    }
+
+    public function storeExamGrades(Request $request, $courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        $this->authorizeTeacher($course);
+
+        $request->validate([
+            'grades'               => 'required|array',
+            'grades.*.score_uts'   => 'nullable|numeric|min:0|max:100',
+            'grades.*.score_uas'   => 'nullable|numeric|min:0|max:100',
+            'grades.*.notes'       => 'nullable|string',
+        ]);
+
+        foreach ($request->grades as $studentId => $data) {
+            $scoreUts = is_numeric($data['score_uts'] ?? null) ? $data['score_uts'] : null;
+            $scoreUas = is_numeric($data['score_uas'] ?? null) ? $data['score_uas'] : null;
+
+            if ($scoreUts !== null || $scoreUas !== null) {
+                ExamGrade::updateOrCreate(
+                    [
+                        'course_id'  => $courseId,
+                        'student_id' => $studentId,
+                    ],
+                    [
+                        'score_uts'  => $scoreUts,
+                        'score_uas'  => $scoreUas,
+                        'notes'      => $data['notes'] ?? null,
+                        'created_by' => Auth::id(),
+                    ]
+                );
+            }
+        }
+
+        return back()->with('success', 'Nilai UTS & UAS berhasil disimpan!');
     }
 
     // ─── HELPERS ─────────────────────────────────────────────────────────────────

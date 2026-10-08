@@ -131,17 +131,17 @@
         </div>
     </div>
     <div class="stat-card">
+        <div class="stat-icon si-blue"><i class="bi bi-award-fill"></i></div>
+        <div class="stat-body">
+            <div class="stat-num">{{ $avg_score }}</div>
+            <div class="stat-label">Rata-Rata Nilai Siswa</div>
+        </div>
+    </div>
+    <div class="stat-card">
         <div class="stat-icon si-gold"><i class="bi bi-file-earmark-text-fill"></i></div>
         <div class="stat-body">
             <div class="stat-num">{{ $total_assignments }}</div>
             <div class="stat-label">Total Tugas Dibuat</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon si-blue"><i class="bi bi-patch-question-fill"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $total_quizzes }}</div>
-            <div class="stat-label">Total Kuis Dibuat</div>
         </div>
     </div>
     <div class="stat-card">
@@ -209,6 +209,14 @@
 {{-- ─── SISWA DASHBOARD ─────────────────────────────────────────────────── --}}
 @if($user->isSiswa())
 <div class="stats-grid">
+    <div class="stat-card" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white;">
+        <div class="stat-icon" style="background: rgba(255,255,255,0.2); color: white;"><i class="bi bi-award-fill"></i></div>
+        <div class="stat-body">
+            <div class="stat-num" style="color: white; font-size: 1.8rem; font-weight: 800;">{{ $overall_avg }} <span style="font-size: 0.9rem; opacity: 0.9;">/ 100</span></div>
+            <div class="stat-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">Rata-Rata Nilai Saya</div>
+            <div class="stat-sub" style="color: #fef08a; font-weight: 700;">Predikat: {{ $grade_predicate }}</div>
+        </div>
+    </div>
     <div class="stat-card">
         <div class="stat-icon si-emerald"><i class="bi bi-mortarboard-fill"></i></div>
         <div class="stat-body">
@@ -217,17 +225,10 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon si-red"><i class="bi bi-credit-card-fill"></i></div>
-        <div class="stat-body">
-            <div class="stat-num">{{ $unpaid_bills->count() }}</div>
-            <div class="stat-label">Tagihan Belum Lunas</div>
-        </div>
-    </div>
-    <div class="stat-card">
         <div class="stat-icon si-gold"><i class="bi bi-cash-stack"></i></div>
         <div class="stat-body">
             <div class="stat-num">Rp {{ number_format($total_unpaid, 0, ',', '.') }}</div>
-            <div class="stat-label">Total Tagihan Tertunggak</div>
+            <div class="stat-label">Tagihan Tertunggak ({{ $unpaid_bills->count() }})</div>
         </div>
     </div>
     <div class="stat-card">
@@ -235,6 +236,74 @@
         <div class="stat-body">
             <div class="stat-num">{{ $recent_attempts->count() }}</div>
             <div class="stat-label">Kuis Selesai Dikerjakan</div>
+        </div>
+    </div>
+</div>
+
+{{-- Widget Breakdown Nilai Siswa --}}
+<div class="card" style="margin-bottom: 1.25rem; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+    <div class="card-header" style="border-bottom: 1px solid #f1f5f9; padding: 1rem 1.25rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📈</span> Rincian Nilai & Capaian Belajar
+        </h3>
+        <span class="badge badge-emerald" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">{{ $grade_predicate }}</span>
+    </div>
+    <div class="card-body" style="padding: 1.25rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">RATA-RATA TUGAS</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-top: 0.2rem;">{{ $assignment_avg }}</div>
+                </div>
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="bi bi-journal-check"></i>
+                </div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">RATA-RATA KUIS</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-top: 0.2rem;">{{ $quiz_avg }}</div>
+                </div>
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">RATA-RATA UTS</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #047857; margin-top: 0.2rem;">{{ $uts_avg }}</div>
+                </div>
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #d1fae5; color: #047857; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="bi bi-file-earmark-diff-fill"></i>
+                </div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">RATA-RATA UAS</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #1d4ed8; margin-top: 0.2rem;">{{ $uas_avg }}</div>
+                </div>
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #dbeafe; color: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">SKOR GABUNGAN</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: #059669; margin-top: 0.2rem;">{{ $overall_avg }}</div>
+                </div>
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #d1fae5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 0.35rem;">
+                <span>Kemajuan Akademik ({{ $overall_avg === '-' ? 'Belum ada nilai' : $overall_avg . '%' }})</span>
+                <span>Target Minimum: 75</span>
+            </div>
+            <div style="width: 100%; height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                <div style="width: {{ $overall_avg === '-' ? 0 : min(100, max(0, (float)$overall_avg)) }}%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 999px; transition: width 0.5s ease;"></div>
+            </div>
         </div>
     </div>
 </div>

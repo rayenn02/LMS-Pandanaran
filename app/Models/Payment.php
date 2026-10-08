@@ -16,9 +16,12 @@ class Payment extends Model
         'amount_paid',
         'payment_method',
         'va_number',
+        'snap_token',
+        'midtrans_transaction_id',
+        'payment_type',
         'proof_file',
         'notes',
-        'status', // pending, success, rejected
+        'status', // pending, success, rejected, expired, failed
         'paid_at',
         'verified_at',
         'verified_by',
