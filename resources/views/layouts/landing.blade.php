@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MAN Pandanaran - Madrasah Aliyah Negeri Pandanaran, Institusi Pendidikan Islam Modern Berprestasi Internasional di Yogyakarta">
-    <title>@yield('title', 'Beranda') | MAN Pandanaran</title>
+    <meta name="description" content="MA Sunan Pandanaran, Institusi Pendidikan Islam Modern Berprestasi Internasional di Yogyakarta">
+    <title>@yield('title', 'Beranda') | MA Sunan Pandanaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -337,6 +337,128 @@
         .flash-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .flash-info    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
 
+        /* ── PROFIL / IDENTITAS ──────────────────────────────────────────────── */
+        .identity-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 3rem;
+        }
+        .identity-card {
+            background: white; border: 1px solid #e2e8f0; border-radius: 14px;
+            padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04); transition: all 0.3s;
+        }
+        .identity-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: var(--emerald-100); }
+        .identity-icon {
+            width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+            background: var(--emerald-50); color: var(--emerald-700);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .identity-label { font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .identity-value { font-size: 0.92rem; font-weight: 700; color: var(--slate-800); margin-top: 2px; }
+
+        /* History Block */
+        .history-block { display: grid; grid-template-columns: 1fr 300px; gap: 3rem; align-items: start; }
+        .history-title { font-size: 1.4rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1rem; line-height: 1.3; }
+        .history-text p { font-size: 0.9rem; color: #475569; line-height: 1.75; }
+        .history-milestones { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.85rem; }
+        .milestone { display: flex; gap: 1rem; align-items: flex-start; }
+        .milestone-year {
+            background: linear-gradient(135deg, var(--emerald-700), var(--emerald-600));
+            color: white; font-weight: 800; font-size: 0.78rem;
+            padding: 0.3rem 0.65rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+        }
+        .milestone-event { font-size: 0.85rem; color: #475569; padding-top: 0.25rem; }
+        .history-stats-panel {
+            background: linear-gradient(135deg, var(--emerald-700), var(--emerald-800));
+            border-radius: 20px; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+            position: sticky; top: 100px;
+        }
+        .stats-panel-item { text-align: center; }
+        .stats-panel-num { font-size: 1.8rem; font-weight: 800; color: var(--gold-400); }
+        .stats-panel-label { font-size: 0.72rem; color: rgba(255,255,255,0.75); margin-top: 4px; }
+
+        /* ── VISI & MISI ─────────────────────────────────────────────────────── */
+        .visi-misi-section {
+            background: linear-gradient(150deg, #022c22 0%, #064e3b 50%, #065f46 100%);
+        }
+        .visi-misi-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; margin-bottom: 3rem; }
+        .visi-card, .misi-card {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .visi-card:hover, .misi-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+        .visi-card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .visi-icon {
+            width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+            background: rgba(16,185,129,0.2); color: #34d399;
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+        }
+        .visi-card-header h3 { color: white; font-size: 1.15rem; font-weight: 700; }
+        .visi-statement {
+            border-left: 3px solid #34d399; padding-left: 1.25rem; margin: 0;
+            font-size: 1rem; color: rgba(255,255,255,0.9); line-height: 1.8; font-style: italic;
+        }
+        .misi-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .misi-list li {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            font-size: 0.875rem; color: rgba(255,255,255,0.85); line-height: 1.6;
+        }
+        .misi-list li i { color: #34d399; font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+        .nilai-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+        .nilai-card {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 1.75rem 1.25rem; text-align: center; transition: all 0.3s;
+        }
+        .nilai-card:hover { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); transform: translateY(-4px); }
+        .nilai-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .nilai-card h4 { color: white; font-weight: 700; margin-bottom: 0.5rem; }
+        .nilai-card p { color: rgba(255,255,255,0.65); font-size: 0.8rem; line-height: 1.5; }
+
+        /* ── KEPALA MADRASAH ─────────────────────────────────────────────────── */
+        .kepala-highlight {
+            display: grid; grid-template-columns: 260px 1fr; gap: 3rem;
+            background: linear-gradient(135deg, var(--emerald-50), white);
+            border: 1px solid var(--emerald-100); border-radius: 24px;
+            padding: 2.5rem; margin-bottom: 3rem; align-items: center;
+        }
+        .kepala-photo-wrapper { text-align: center; }
+        .kepala-photo-placeholder {
+            width: 180px; height: 180px; border-radius: 50%; margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--emerald-700), var(--emerald-600));
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 12px 40px rgba(4,120,87,0.35);
+        }
+        .kepala-badge-tag {
+            display: inline-block; background: var(--emerald-700); color: white;
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.78rem; font-weight: 700;
+        }
+        .kepala-name { font-size: 1.7rem; font-weight: 800; color: var(--slate-800); margin-bottom: 0.5rem; }
+        .kepala-tagline { font-size: 0.95rem; color: var(--emerald-700); font-style: italic; margin-bottom: 1.5rem; }
+        .kepala-details { display: flex; flex-direction: column; gap: 0.85rem; }
+        .kepala-detail-item { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.875rem; color: #475569; }
+        .kepala-detail-item i { color: var(--emerald-600); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+        .wakil-subtitle { font-size: 1.2rem; font-weight: 800; color: var(--slate-800); margin-bottom: 1.5rem; }
+        .wakil-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+        .wakil-card {
+            background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.5rem;
+            text-align: center; transition: all 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .wakil-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: var(--emerald-100); }
+        .wakil-photo {
+            width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--emerald-600), var(--emerald-700));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: rgba(255,255,255,0.7);
+        }
+        .wakil-info h4 { font-size: 0.9rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.4rem; }
+        .wakil-role {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background: var(--emerald-50); color: var(--emerald-700);
+            padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.72rem; font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .wakil-info p { font-size: 0.78rem; color: #64748b; line-height: 1.5; }
+
         /* ── SCROLL ANIMATIONS ───────────────────────────────────────────────── */
         .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .reveal.revealed { opacity: 1; transform: translateY(0); }
@@ -351,6 +473,13 @@
             .hero-actions { justify-content: center; }
             .hero-visual { display: none; }
             .footer-grid { grid-template-columns: 1fr 1fr; }
+            .identity-grid { grid-template-columns: repeat(2, 1fr); }
+            .history-block { grid-template-columns: 1fr; }
+            .history-stats-panel { position: static; }
+            .visi-misi-grid { grid-template-columns: 1fr; }
+            .nilai-grid { grid-template-columns: repeat(2, 1fr); }
+            .kepala-highlight { grid-template-columns: 1fr; text-align: center; }
+            .wakil-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
             .navbar-nav { display: none; }
@@ -360,6 +489,9 @@
             .ppdb-info-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; }
             .footer-bottom { flex-direction: column; text-align: center; }
+            .identity-grid { grid-template-columns: 1fr; }
+            .nilai-grid { grid-template-columns: 1fr 1fr; }
+            .wakil-grid { grid-template-columns: 1fr; }
         }
     </style>
     @yield('head')
@@ -371,13 +503,14 @@
     <div class="navbar-brand">
         <div class="navbar-logo">M</div>
         <div class="navbar-name">
-            MAN Pandanaran
-            <small>Madrasah Aliyah Negeri</small>
+            MA Sunan Pandanaran
+            <small>Madrasah Aliyah</small>
         </div>
     </div>
     <ul class="navbar-nav" id="navLinks">
         <li><a href="{{ route('landing') }}#beranda">Beranda</a></li>
-        <li><a href="{{ route('landing') }}#program">Program Unggulan</a></li>
+        <li><a href="{{ route('landing') }}#profil">Profil</a></li>
+        <li><a href="{{ route('landing') }}#program">Program</a></li>
         <li><a href="{{ route('landing') }}#berita">Berita</a></li>
         <li><a href="{{ route('landing') }}#fasilitas">Fasilitas</a></li>
         <li><a href="{{ route('landing') }}#ppdb">PPDB</a></li>
@@ -400,8 +533,8 @@
     <div class="footer-grid">
         <div class="footer-brand">
             <div class="navbar-logo" style="background: linear-gradient(135deg, #f59e0b, #d97706);">M</div>
-            <p style="color: white; font-size: 1rem; font-weight: 700; margin-top: 0.5rem;">MAN Pandanaran</p>
-            <p>Madrasah Aliyah Negeri Pandanaran — Mencetak generasi Muslim intelektual berkarakter, berprestasi di tatanan global berlandaskan nilai-nilai Qur'ani.</p>
+            <p style="color: white; font-size: 1rem; font-weight: 700; margin-top: 0.5rem;">MA Sunan Pandanaran</p>
+            <p>MA Sunan Pandanaran — Mencetak generasi Muslim intelektual berkarakter, berprestasi di tatanan global berlandaskan nilai-nilai Qur'ani.</p>
             <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
                 <a href="#" style="width: 36px; height: 36px; background: rgba(255,255,255,0.08); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(251,191,36,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="bi bi-instagram" style="color: #e1306c;"></i></a>
                 <a href="#" style="width: 36px; height: 36px; background: rgba(255,255,255,0.08); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(251,191,36,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="bi bi-youtube" style="color: #ff0000;"></i></a>
@@ -412,6 +545,8 @@
             <h5>Tautan Cepat</h5>
             <ul class="footer-links">
                 <li><a href="{{ route('landing') }}#beranda">Beranda</a></li>
+                <li><a href="{{ route('landing') }}#profil">Profil Madrasah</a></li>
+                <li><a href="{{ route('landing') }}#visi-misi">Visi & Misi</a></li>
                 <li><a href="{{ route('landing') }}#program">Program Unggulan</a></li>
                 <li><a href="{{ route('landing') }}#berita">Berita & Agenda</a></li>
                 <li><a href="{{ route('landing') }}#fasilitas">Fasilitas</a></li>
@@ -431,16 +566,16 @@
         <div class="footer-col">
             <h5>Info Madrasah</h5>
             <ul class="footer-links">
-                <li><a href="#">Akreditasi A BAN-S/M</a></li>
-                <li><a href="#">Profil Kepala Madrasah</a></li>
-                <li><a href="#">Struktur Organisasi</a></li>
-                <li><a href="#">Tenaga Pendidik & Kependidikan</a></li>
+                <li><a href="{{ route('landing') }}#profil">Profil Madrasah</a></li>
+                <li><a href="{{ route('landing') }}#visi-misi">Visi & Misi</a></li>
+                <li><a href="{{ route('landing') }}#kepala-madrasah">Pimpinan Madrasah</a></li>
+                <li><a href="{{ route('landing') }}#fasilitas">Sarana & Prasarana</a></li>
                 <li><a href="#">Download Panduan PPDB</a></li>
             </ul>
         </div>
     </div>
     <div class="footer-bottom">
-        <p>© {{ date('Y') }} MAN Pandanaran — Seluruh hak cipta dilindungi undang-undang.</p>
+        <p>© {{ date('Y') }} MA Sunan Pandanaran — Seluruh hak cipta dilindungi undang-undang.</p>
         <p>Jl. Kaliurang KM 14.5, Ngemplak, Sleman, D.I. Yogyakarta 55584</p>
     </div>
 </footer>

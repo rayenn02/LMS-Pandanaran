@@ -1,6 +1,6 @@
 @extends('layouts.landing')
 
-@section('title', $post->title . ' - MAN Pandanaran')
+@section('title', $post->title . ' - MA Sunan Pandanaran')
 
 @section('content')
 <div style="min-height: 100vh; padding-top: 80px; background: #f8fafc;">

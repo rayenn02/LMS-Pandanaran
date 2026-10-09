@@ -21,10 +21,10 @@
                     <div class="form-group">
                         <label class="form-label">Kategori *</label>
                         <select name="category" class="form-input" required>
-                            <option value="berita">📰 Berita</option>
-                            <option value="agenda">📅 Agenda</option>
-                            <option value="prestasi">🏆 Prestasi</option>
-                            <option value="pengumuman">📢 Pengumuman</option>
+                            <option value="berita" {{ old('category', $selectedCategory ?? '') === 'berita' ? 'selected' : '' }}>📰 Berita</option>
+                            <option value="agenda" {{ old('category', $selectedCategory ?? '') === 'agenda' ? 'selected' : '' }}>📅 Agenda</option>
+                            <option value="prestasi" {{ old('category', $selectedCategory ?? '') === 'prestasi' ? 'selected' : '' }}>🏆 Prestasi / Jejak Keberhasilan</option>
+                            <option value="pengumuman" {{ old('category', $selectedCategory ?? '') === 'pengumuman' ? 'selected' : '' }}>📢 Pengumuman</option>
                         </select>
                     </div>
                     <div class="form-group">

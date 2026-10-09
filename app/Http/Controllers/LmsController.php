@@ -38,7 +38,7 @@ class LmsController extends Controller
     public function showCourse($id)
     {
         $user = Auth::user();
-        $course = Course::with(['subject', 'teacher', 'schoolClass', 'materials', 'assignments', 'quizzes'])
+        $course = Course::with(['subject', 'teacher', 'schoolClass', 'materials', 'assignments', 'quizzes', 'attendances.records'])
             ->findOrFail($id);
 
         return view('lms.courses.show', compact('course', 'user'));
@@ -264,9 +264,13 @@ class LmsController extends Controller
     public function attendance($courseId)
     {
         $user = Auth::user();
-        $course = Course::with('schoolClass')->findOrFail($courseId);
-        $attendances = Attendance::with('records')->where('course_id', $courseId)->latest('date')->get();
-        return view('lms.attendances.index', compact('course', 'attendances', 'user'));
+        $course = Course::with(['schoolClass', 'subject', 'teacher'])->findOrFail($courseId);
+        $attendances = Attendance::with('records.student')->where('course_id', $courseId)->latest('date')->get();
+        $students = User::where('role', 'siswa')
+            ->where('class_id', $course->class_id)
+            ->orderBy('name')
+            ->get();
+        return view('lms.attendances.index', compact('course', 'attendances', 'students', 'user'));
     }
 
     public function storeAttendance(Request $request, $courseId)

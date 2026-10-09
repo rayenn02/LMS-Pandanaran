@@ -1,11 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Manajemen Berita & Pengumuman')
-@section('page_title', 'Berita & Pengumuman')
+@section('title', request('category') === 'prestasi' ? 'Jejak Keberhasilan Santri' : 'Manajemen Berita & Pengumuman')
+@section('page_title', request('category') === 'prestasi' ? 'Jejak Keberhasilan Santri' : 'Berita & Pengumuman')
 
 @section('content')
 <div style="display: flex; justify-content: flex-end; margin-bottom: 1.25rem;">
-    <a href="{{ route('admin.posts.create') }}" class="btn btn-gold"><i class="bi bi-plus-lg"></i> Tulis Artikel Baru</a>
+    <a href="{{ route('admin.posts.create', ['category' => request('category')]) }}" class="btn btn-gold">
+        <i class="bi bi-plus-lg"></i> {{ request('category') === 'prestasi' ? 'Tambah Prestasi Baru' : 'Tulis Artikel Baru' }}
+    </a>
 </div>
 
 {{-- Filter --}}
@@ -25,7 +27,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3>📰 Daftar Artikel ({{ $posts->total() }})</h3>
+        <h3>{{ request('category') === 'prestasi' ? '🏆 Daftar Jejak Keberhasilan Santri' : '📰 Daftar Artikel' }} ({{ $posts->total() }})</h3>
     </div>
     <div class="card-body" style="padding: 0;">
         <div class="table-wrapper">

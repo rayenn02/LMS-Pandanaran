@@ -448,7 +448,7 @@ class DatabaseSeeder extends Seeder
             'code' => 'SERAGAM',
             'default_amount' => 650000,
             'is_monthly' => false,
-            'description' => 'Seragam batik khas MAN Pandanaran, jas almamater, seragam olahraga, dan atribut madrasah.',
+            'description' => 'Seragam batik khas MA Sunan Pandanaran, jas almamater, seragam olahraga, dan atribut madrasah.',
         ]);
 
         $feeUjian = FeeType::create([
@@ -542,10 +542,10 @@ class DatabaseSeeder extends Seeder
 
         // 11. Create Posts (Berita, Agenda, Prestasi, Pengumuman)
         Post::create([
-            'title' => 'Tim Riset & Robotika MAN Pandanaran Raih Medali Emas di Ajang International Science Expo 2026',
+            'title' => 'Tim Riset & Robotika MA Sunan Pandanaran Raih Medali Emas di Ajang International Science Expo 2026',
             'slug' => 'tim-robotika-man-pandanaran-raih-emas-2026',
             'category' => 'prestasi',
-            'excerpt' => 'Karya inovasi sistem irigasi pintar berbasis IoT dan energi surya karya santri MAN Pandanaran berhasil memukau dewan juri internasional.',
+            'excerpt' => 'Karya inovasi sistem irigasi pintar berbasis IoT dan energi surya karya santri MA Sunan Pandanaran berhasil memukau dewan juri internasional.',
             'content' => "Prestasi membanggakan kembali diukir oleh civitas akademika **Madrasah Aliyah Negeri (MAN) Pandanaran**. Dalam ajang bergengsi *International Science and Invention Expo 2026*, tim robotika madrasah berhasil mempersembahkan Medali Emas (Gold Medal) setelah menyisihkan lebih dari 250 tim perwakilan dari 18 negara.\n\nInovasi yang diusung bertajuk *'Smart Eco-Irrigation for Modern Agriculture'* yang menggabungkan sensor tanah real-time, energi surya terbarukan, dan aplikasi cerdas pemantau kelembaban. Kepala Madrasah, Dr. H. Ahmad Fauzi, M.Pd, menyampaikan apresiasi setinggi-tingginya kepada para siswa pembina yang terus berjuang mengharumkan nama bangsa di kancah global.\n\n\"Madrasah Mandiri Berprestasi bukan sekadar slogan, melainkan tekad nyata santri kita dalam membuktikan bahwa nilai-nilai keislaman dan kemajuan sains teknologi dapat berpadu secara harmonis,\" tutur beliau.",
             'thumbnail' => null,
             'author_id' => $admin->id,
@@ -559,7 +559,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'ppdb-man-pandanaran-2026-2027',
             'category' => 'pengumuman',
             'excerpt' => 'Informasi lengkap pendaftaran santri baru program Unggulan Tahfidz, Kelas Sains Robotika, dan Kelas Internasional Bahasa.',
-            'content' => "MAN Pandanaran secara resmi membuka pendaftaran Peserta Didik Baru (PPDB) untuk Tahun Ajaran 2026/2027.\n\n### Jalur Pendaftaran:\n1. **Jalur Prestasi Akademik & Non-Akademik**: Dibuka s.d. 30 April 2026\n2. **Jalur Khusus Tahfidz Qur'an (Minimal 5 Juz)**: Bebas tes akademik dan beasiswa SPP\n3. **Jalur Reguler / CBT Online**: Pendaftaran gelombang I dan II\n\n### Fasilitas Unggulan:\n- Asrama Pesantren Modern (Boarding School)\n- Laboratorium Komputer AI & Robotika\n- Perpustakaan Digital Berstandar Nasional\n- Kerjasama Program Luar Negeri (Middle East & Asia)",
+            'content' => "MA Sunan Pandanaran secara resmi membuka pendaftaran Peserta Didik Baru (PPDB) untuk Tahun Ajaran 2026/2027.\n\n### Jalur Pendaftaran:\n1. **Jalur Prestasi Akademik & Non-Akademik**: Dibuka s.d. 30 April 2026\n2. **Jalur Khusus Tahfidz Qur'an (Minimal 5 Juz)**: Bebas tes akademik dan beasiswa SPP\n3. **Jalur Reguler / CBT Online**: Pendaftaran gelombang I dan II\n\n### Fasilitas Unggulan:\n- Asrama Pesantren Modern (Boarding School)\n- Laboratorium Komputer AI & Robotika\n- Perpustakaan Digital Berstandar Nasional\n- Kerjasama Program Luar Negeri (Middle East & Asia)",
             'thumbnail' => null,
             'author_id' => $admin->id,
             'event_date' => null,
@@ -572,7 +572,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'wisuda-tahfidz-30-juz-angkatan-xiv',
             'category' => 'agenda',
             'excerpt' => 'Sebanyak 42 santri berhasil menuntaskan hafalan 30 Juz bil ghoib dan diwisuda bersama para orang tua di Auditorium Utama.',
-            'content' => "Suasana haru dan khidmat menyelimuti Auditorium Utama MAN Pandanaran dalam perhelatan Wisuda Akbar Tahfidzul Qur'an Angkatan XIV. Kegiatan ini menjadi wujud komitmen madrasah dalam melahirkan generasi qur'ani yang berakhlak mulia dan berwawasan ilmiah luas.",
+            'content' => "Suasana haru dan khidmat menyelimuti Auditorium Utama MA Sunan Pandanaran dalam perhelatan Wisuda Akbar Tahfidzul Qur'an Angkatan XIV. Kegiatan ini menjadi wujud komitmen madrasah dalam melahirkan generasi qur'ani yang berakhlak mulia dan berwawasan ilmiah luas.",
             'thumbnail' => null,
             'author_id' => $admin->id,
             'event_date' => now()->addDays(14)->toDateString(),
@@ -585,7 +585,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'kunjungan-studi-riset-2026',
             'category' => 'berita',
             'excerpt' => 'Siswa kelas XI MIPA memperdalam pemahaman fisika kuantum dan teknologi radiasi pangan.',
-            'content' => "Dalam rangka memperkaya wawasan aplikatif sains, 80 santri peminatan MIPA MAN Pandanaran melaksanakan kunjungan edukatif ke pusat riset sains terkemuka. Santri diberikan kesempatan mengamati langsung instrumen laboratorium mutakhir serta berdialog langsung dengan para peneliti.",
+            'content' => "Dalam rangka memperkaya wawasan aplikatif sains, 80 santri peminatan MIPA MA Sunan Pandanaran melaksanakan kunjungan edukatif ke pusat riset sains terkemuka. Santri diberikan kesempatan mengamati langsung instrumen laboratorium mutakhir serta berdialog langsung dengan para peneliti.",
             'thumbnail' => null,
             'author_id' => $admin->id,
             'event_date' => null,

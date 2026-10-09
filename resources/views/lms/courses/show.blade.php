@@ -179,9 +179,55 @@
 
 {{-- TAB: PRESENSI --}}
 <div id="panel-presensi" class="tab-panel" style="display: none;">
-    <a href="{{ route('lms.attendance', $course->id) }}" class="btn btn-primary" style="margin-bottom: 1rem; display: inline-flex;">
-        <i class="bi bi-calendar-check"></i> Kelola Presensi
-    </a>
+    <div style="background: white; border-radius: 16px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+            <div>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #1e293b; margin-bottom: 0.25rem;">
+                    <i class="bi bi-calendar-check-fill" style="color: #047857;"></i> Presensi Kehadiran Kelas
+                </h4>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 0;">
+                    Total Pertemuan Tercatat: <strong>{{ $course->attendances->count() }} Pertemuan</strong>
+                </p>
+            </div>
+            <a href="{{ route('lms.attendance', $course->id) }}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                <i class="bi bi-pencil-square"></i> {{ ($user->isGuru() && $course->teacher_id === $user->id) || $user->isAdmin() ? 'Kelola / Input Presensi' : 'Lihat Rekap Presensi Saya' }}
+            </a>
+        </div>
+
+        @if($course->attendances->count())
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            @foreach($course->attendances->take(5) as $att)
+            @php $myRec = $user->isSiswa() ? $att->records->where('student_id', $user->id)->first() : null; @endphp
+            <div style="background: #f8fafc; border-radius: 10px; padding: 0.875rem 1.25rem; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 700; font-size: 0.875rem; color: #1e293b;">{{ $att->title }}</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"><i class="bi bi-calendar3"></i> {{ $att->date?->isoFormat('dddd, D MMMM YYYY') }}</div>
+                </div>
+                <div>
+                    @if($user->isSiswa())
+                        @if($myRec)
+                        <span class="badge badge-{{ $myRec->status === 'hadir' ? 'emerald' : ($myRec->status === 'izin' ? 'warning' : ($myRec->status === 'sakit' ? 'info' : 'danger')) }}">
+                            {{ strtoupper($myRec->status) }}
+                        </span>
+                        @else
+                        <span class="badge badge-secondary">-</span>
+                        @endif
+                    @else
+                        <span style="font-size: 0.78rem; font-weight: 600; color: #047857; background: #d1fae5; padding: 0.25rem 0.6rem; border-radius: 6px;">
+                            {{ $att->records->where('status', 'hadir')->count() }} / {{ $att->records->count() }} Hadir
+                        </span>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+            <i class="bi bi-calendar-x" style="font-size: 2.5rem;"></i>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">Belum ada presensi diisi untuk kelas ini.</p>
+        </div>
+        @endif
+    </div>
 </div>
 
 @endsection

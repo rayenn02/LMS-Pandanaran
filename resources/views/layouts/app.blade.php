@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') | MAN Pandanaran</title>
+    <title>@yield('title', 'Dashboard') | MA Sunan Pandanaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -335,7 +335,7 @@
     <div class="sidebar-brand">
         <div class="sidebar-logo">M</div>
         <div class="sidebar-brand-text">
-            <div class="name">MAN Pandanaran</div>
+            <div class="name">MA Sunan Pandanaran</div>
             <div class="tagline">Sistem Informasi Madrasah</div>
         </div>
     </div>
@@ -383,8 +383,13 @@
             </a>
         </li>
         <li class="sidebar-nav-item">
-            <a href="{{ route('admin.posts') }}" class="{{ request()->routeIs('admin.posts*') ? 'active' : '' }}">
+            <a href="{{ route('admin.posts') }}" class="{{ request()->routeIs('admin.posts*') && request('category') !== 'prestasi' ? 'active' : '' }}">
                 <i class="bi bi-newspaper"></i> Berita & Pengumuman
+            </a>
+        </li>
+        <li class="sidebar-nav-item">
+            <a href="{{ route('admin.posts', ['category' => 'prestasi']) }}" class="{{ request()->routeIs('admin.posts*') && request('category') === 'prestasi' ? 'active' : '' }}">
+                <i class="bi bi-trophy-fill"></i> Jejak Keberhasilan
             </a>
         </li>
         <li class="sidebar-nav-item">
@@ -457,26 +462,25 @@
                 $messagesCount = auth()->user()->isAdmin() ? \App\Models\ContactMessage::count() : 0;
                 $latestPosts = \App\Models\Post::latest()->take(3)->get();
                 $totalNotifCount = $pendingPPDB + $messagesCount + $latestPosts->count();
+                $userId = auth()->id();
             @endphp
 
             <div style="position: relative;">
                 <div class="topbar-bell" id="bellBtn" onclick="toggleNotifications()" title="Notifikasi & Pengumuman">
                     <i class="bi bi-bell-fill"></i>
-                    @if($totalNotifCount > 0)
-                        <span class="notification-badge">{{ $totalNotifCount }}</span>
-                    @endif
+                    <span class="notification-badge" id="notifBadge" style="display: none;">{{ $totalNotifCount }}</span>
                 </div>
 
                 <!-- Dropdown Modal -->
                 <div class="notification-dropdown" id="notifDropdown">
                     <div class="notif-header">
                         <h4><i class="bi bi-bell"></i> Notifikasi & Pengumuman</h4>
-                        <span class="badge badge-emerald">{{ $totalNotifCount }} Baru</span>
+                        <span class="badge badge-emerald" id="notifHeaderBadge">{{ $totalNotifCount }} Baru</span>
                     </div>
                     <div class="notif-body">
                         @if(auth()->user()->isAdmin())
                             @if($pendingPPDB > 0)
-                            <a href="{{ route('admin.registrations') }}" class="notif-item">
+                            <a href="{{ route('admin.registrations') }}" class="notif-item" data-notif-id="ppdb" onclick="markSingleNotifAsRead('ppdb')">
                                 <div class="notif-icon bg-amber"><i class="bi bi-person-plus-fill"></i></div>
                                 <div>
                                     <div class="notif-title">Pendaftaran PPDB Baru</div>
@@ -486,7 +490,7 @@
                             @endif
 
                             @if($messagesCount > 0)
-                            <a href="{{ route('admin.messages') }}" class="notif-item">
+                            <a href="{{ route('admin.messages') }}" class="notif-item" data-notif-id="messages" onclick="markSingleNotifAsRead('messages')">
                                 <div class="notif-icon bg-blue"><i class="bi bi-envelope-fill"></i></div>
                                 <div>
                                     <div class="notif-title">Pesan & Lupa Password</div>
@@ -497,7 +501,7 @@
                         @endif
 
                         @foreach($latestPosts as $post)
-                        <a href="{{ route('post.show', $post->slug) }}" target="_blank" class="notif-item">
+                        <a href="{{ route('post.show', $post->slug) }}" target="_blank" class="notif-item" data-notif-id="post-{{ $post->id }}" onclick="markSingleNotifAsRead('post-{{ $post->id }}')">
                             <div class="notif-icon bg-emerald"><i class="bi bi-newspaper"></i></div>
                             <div>
                                 <div class="notif-title">{{ Str::limit($post->title, 38) }}</div>
@@ -556,6 +560,70 @@
         }, 5000);
     });
 
+    const CURRENT_USER_ID = {{ $userId }};
+    const READ_ITEMS_KEY = 'lms_read_notif_items_user_' + CURRENT_USER_ID;
+
+    function getReadItems() {
+        try {
+            return JSON.parse(localStorage.getItem(READ_ITEMS_KEY) || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveReadItems(readArray) {
+        localStorage.setItem(READ_ITEMS_KEY, JSON.stringify(readArray));
+    }
+
+    function updateNotifBadges() {
+        const readArray = getReadItems();
+        const items = document.querySelectorAll('.notif-item[data-notif-id]');
+        let unreadCount = 0;
+
+        items.forEach(item => {
+            const id = item.getAttribute('data-notif-id');
+            if (readArray.includes(id)) {
+                item.style.opacity = '0.55';
+            } else {
+                item.style.opacity = '1';
+                unreadCount++;
+            }
+        });
+
+        const badge = document.getElementById('notifBadge');
+        const headerBadge = document.getElementById('notifHeaderBadge');
+
+        if (badge) {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        if (headerBadge) {
+            if (unreadCount > 0) {
+                headerBadge.textContent = unreadCount + ' Baru';
+                headerBadge.style.background = '#d1fae5';
+                headerBadge.style.color = '#047857';
+            } else {
+                headerBadge.textContent = 'Semua Dibaca';
+                headerBadge.style.background = '#e2e8f0';
+                headerBadge.style.color = '#64748b';
+            }
+        }
+    }
+
+    function markSingleNotifAsRead(notifId) {
+        let readArray = getReadItems();
+        if (!readArray.includes(notifId)) {
+            readArray.push(notifId);
+            saveReadItems(readArray);
+        }
+        updateNotifBadges();
+    }
+
     // Toggle Notification Dropdown
     function toggleNotifications() {
         const dropdown = document.getElementById('notifDropdown');
@@ -569,6 +637,8 @@
             dropdown.classList.remove('show');
         }
     });
+
+    document.addEventListener('DOMContentLoaded', updateNotifBadges);
 </script>
 @yield('scripts')
 </body>

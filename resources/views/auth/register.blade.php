@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran PPDB | MAN Pandanaran</title>
+    <title>Pendaftaran PPDB | MA Sunan Pandanaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -120,7 +120,7 @@
             <div class="register-left-brand">
                 <div class="register-logo">M</div>
                 <div>
-                    <div class="name">MAN Pandanaran</div>
+                    <div class="name">MA Sunan Pandanaran</div>
                     <div class="sub">Penerimaan Peserta Didik Baru</div>
                 </div>
             </div>
@@ -239,10 +239,6 @@
                 <i class="bi bi-pencil-square"></i> Daftar Sekarang
             </button>
         </form>
-
-        <div class="login-link">
-            Sudah punya akun PPDB? <a href="{{ route('login') }}">Masuk di sini</a>
-        </div>
 
         <a href="{{ route('landing') }}" class="back-home">
             <i class="bi bi-arrow-left"></i> Kembali ke Beranda

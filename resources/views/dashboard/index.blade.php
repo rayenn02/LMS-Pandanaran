@@ -16,7 +16,7 @@
             Assalamu'alaikum, {{ Str::words($user->name, 2) }}! 👋
         </h2>
         <p style="color: rgba(255,255,255,0.75); font-size: 0.875rem;">
-            @if($user->isAdmin())    Selamat datang di panel administrasi sistem MAN Pandanaran.
+            @if($user->isAdmin())    Selamat datang di panel administrasi sistem MA Sunan Pandanaran.
             @elseif($user->isGuru()) Semangat mengajar dan membimbing para santri hari ini!
             @elseif($user->isSiswa()) Semangat belajar! Raih prestasi terbaik untuk masa depan cerahmu.
             @else                    Pantau laporan keuangan madrasah dan verifikasi pembayaran masuk.

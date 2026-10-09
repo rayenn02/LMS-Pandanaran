@@ -1,6 +1,6 @@
 @extends('layouts.landing')
 
-@section('title', 'Beranda - MAN Pandanaran')
+@section('title', 'Beranda - MA Sunan Pandanaran')
 
 @section('content')
 <!-- ─── HERO ──────────────────────────────────────────────────────────────── -->
@@ -19,7 +19,7 @@
                 Nilai <span class="accent">Qur'ani</span> & Sains Modern
             </h1>
             <p class="hero-subtitle">
-                MAN Pandanaran mencetak generasi Muslim intelektual berwawasan global,
+                MA Sunan Pandanaran mencetak generasi Muslim intelektual berwawasan global,
                 hafizh Qur'an, kompeten di bidang sains-teknologi, dan berjiwa pemimpin.
             </p>
             <div class="hero-stats">
@@ -66,6 +66,170 @@
                     <div class="hero-card-icon ic-purple"><i class="bi bi-mortarboard-fill"></i></div>
                     <h4>E-Learning Digital</h4>
                     <p>LMS canggih: materi online, kuis interaktif, & pembayaran SPP digital.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── SEJARAH & IDENTITAS ────────────────────────────────────────────────── -->
+<section class="section section-alt" id="profil">
+    <div class="container">
+        <div class="section-header reveal">
+            <div class="section-badge"><i class="bi bi-journal-bookmark-fill"></i> Profil Madrasah</div>
+            <h2 class="section-title">Mengenal Lebih Dekat <span class="accent">MA Sunan Pandanaran</span></h2>
+            <p class="section-subtitle">Berdiri di atas pondasi nilai Islam yang kokoh, kami terus tumbuh menjadi madrasah unggulan bertaraf nasional.</p>
+        </div>
+
+        <!-- Sejarah Singkat -->
+        <div class="history-block reveal">
+            <div class="history-text">
+                <div class="section-badge" style="margin-bottom: 1rem;"><i class="bi bi-clock-history"></i> Sejarah Singkat</div>
+                <h3 class="history-title">Warisan Pesantren Pandanaran yang Terus Berkembang</h3>
+                <p>MA Sunan Pandanaran lahir dari rahim Pesantren Pandanaran yang didirikan oleh <strong>KH. Mufid Mas'ud</strong> pada tahun 1965 di lereng Gunung Merapi, Kabupaten Sleman, D.I. Yogyakarta. Berawal dari kelas sederhana di bawah pohon dengan santri pertama yang hanya berjumlah belasan, madrasah ini tumbuh menjadi salah satu lembaga pendidikan Islam paling bergengsi di kawasan Jawa.</p>
+                <p style="margin-top: 0.85rem;">Nama "Sunan Pandanaran" diambil sebagai penghormatan kepada salah satu Wali Songo yang dikenal dengan keistiqamahannya dalam menyebarkan Islam di Nusantara — mencerminkan cita-cita luhur madrasah untuk mencetak generasi Muslim yang berakhlak mulia, berilmu, dan berdedikasi.</p>
+                <p style="margin-top: 0.85rem;">Kini, MA Sunan Pandanaran telah meluluskan ribuan alumni yang tersebar di berbagai universitas ternama dalam dan luar negeri, menjadi bukti nyata kualitas pendidikan yang terus dijaga selama lebih dari lima dekade.</p>
+                <div class="history-milestones">
+                    <div class="milestone">
+                        <div class="milestone-year">1965</div>
+                        <div class="milestone-event">Berdirinya Pesantren & Madrasah oleh KH. Mufid Mas'ud</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-year">1985</div>
+                        <div class="milestone-event">Ekspansi program dan pembangunan asrama permanen</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-year">2005</div>
+                        <div class="milestone-event">Peraih Akreditasi A pertama & program Tahfidz intensif</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-year">2024</div>
+                        <div class="milestone-event">Digitalisasi LMS & laboratorium AI-Robotika terpadu</div>
+                    </div>
+                </div>
+            </div>
+            <div class="history-stats-panel">
+                <div class="stats-panel-item">
+                    <div class="stats-panel-num">58+</div>
+                    <div class="stats-panel-label">Tahun Berdiri</div>
+                </div>
+                <div class="stats-panel-item">
+                    <div class="stats-panel-num">12.000+</div>
+                    <div class="stats-panel-label">Alumni Seluruh Indonesia</div>
+                </div>
+                <div class="stats-panel-item">
+                    <div class="stats-panel-num">1.200+</div>
+                    <div class="stats-panel-label">Santri Aktif</div>
+                </div>
+                <div class="stats-panel-item">
+                    <div class="stats-panel-num">95+</div>
+                    <div class="stats-panel-label">Tenaga Pendidik</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── VISI & MISI ──────────────────────────────────────────────────────────── -->
+<section class="section visi-misi-section" id="visi-misi">
+    <div class="container">
+        <div class="section-header white-text reveal">
+            <div class="section-badge" style="background: rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.3); color: #fbbf24;">
+                <i class="bi bi-eye-fill"></i> Visi & Misi
+            </div>
+            <h2 class="section-title">Arah & Tujuan <span style="color: #fbbf24;">Perjuangan Kami</span></h2>
+            <p class="section-subtitle">Landasan filosofis yang memandu setiap langkah perjalanan pendidikan MA Sunan Pandanaran.</p>
+        </div>
+        <div class="visi-misi-grid">
+            <!-- Visi -->
+            <div class="visi-card reveal">
+                <div class="visi-card-header">
+                    <div class="visi-icon"><i class="bi bi-stars"></i></div>
+                    <h3>Visi Madrasah</h3>
+                </div>
+                <blockquote class="visi-statement">
+                    "Terwujudnya madrasah yang unggul dalam membentuk insan beriman, berilmu, berakhlak mulia, serta berdaya saing global berlandaskan nilai-nilai Al-Qur'an dan Sunnah."
+                </blockquote>
+            </div>
+            <!-- Misi -->
+            <div class="misi-card reveal">
+                <div class="visi-card-header">
+                    <div class="visi-icon" style="background: rgba(251,191,36,0.2); color: #fbbf24;"><i class="bi bi-bullseye"></i></div>
+                    <h3>Misi Madrasah</h3>
+                </div>
+                <ul class="misi-list">
+                    <li><i class="bi bi-check-circle-fill"></i> Menyelenggarakan pendidikan berbasis Al-Qur'an dengan program Tahfidz terstruktur dan bersanad</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Mengintegrasikan ilmu agama Islam dan ilmu pengetahuan sains-teknologi secara seimbang</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Mengembangkan sumber daya pendidik yang profesional, inovatif, dan berjiwa dakwah</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Membangun lingkungan bilingual (Arab-Inggris) yang mendukung komunikasi global</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Membentuk karakter santri yang mandiri, disiplin, kreatif, dan bertanggung jawab</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Menjalin kemitraan strategis dengan universitas, industri, dan lembaga internasional</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Nilai Utama -->
+        <div class="nilai-grid reveal">
+            <div class="nilai-card">
+                <div class="nilai-icon">🤲</div>
+                <h4>Tauhid</h4>
+                <p>Pondasi keimanan yang kuat sebagai pusat seluruh aktivitas pembelajaran</p>
+            </div>
+            <div class="nilai-card">
+                <div class="nilai-icon">📖</div>
+                <h4>Ilmu</h4>
+                <p>Semangat belajar tanpa henti dalam ilmu agama dan pengetahuan umum</p>
+            </div>
+            <div class="nilai-card">
+                <div class="nilai-icon">⚖️</div>
+                <h4>Akhlak</h4>
+                <p>Karakter mulia yang menjadi teladan bagi masyarakat dan bangsa</p>
+            </div>
+            <div class="nilai-card">
+                <div class="nilai-icon">🌍</div>
+                <h4>Khidmah</h4>
+                <p>Dedikasi untuk melayani agama, masyarakat, dan kemajuan negara</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── KEPALA MADRASAH ──────────────────────────────────────────────────────── -->
+<section class="section section-alt kepala-section" id="kepala-madrasah">
+    <div class="container">
+        <div class="section-header reveal">
+            <div class="section-badge"><i class="bi bi-person-badge-fill"></i> Pimpinan Madrasah</div>
+            <h2 class="section-title">Kepala <span class="accent">Madrasah</span></h2>
+            <p class="section-subtitle">Dipimpin oleh figur berpengalaman yang berdedikasi untuk kemajuan pendidikan Islam.</p>
+        </div>
+        <!-- Kepala Madrasah -->
+        <div class="kepala-highlight reveal">
+            <div class="kepala-photo-wrapper">
+                <div class="kepala-photo-placeholder">
+                    <i class="bi bi-person-fill" style="font-size: 5rem; color: rgba(255,255,255,0.6);"></i>
+                </div>
+                <div class="kepala-badge-tag">Kepala Madrasah</div>
+            </div>
+            <div class="kepala-bio">
+                <div class="section-badge" style="margin-bottom: 1rem;"><i class="bi bi-award-fill"></i> Periode 2022 – Sekarang</div>
+                <h3 class="kepala-name">Dr. H. Ahmad Fauzi, M.Pd.</h3>
+                <p class="kepala-tagline">"Memimpin dengan hati, mendidik dengan ilmu, dan berjuang dengan istiqamah."</p>
+                <div class="kepala-details">
+                    <div class="kepala-detail-item">
+                        <i class="bi bi-mortarboard-fill"></i>
+                        <span><strong>Pendidikan:</strong> S3 Manajemen Pendidikan Islam — UIN Sunan Kalijaga Yogyakarta</span>
+                    </div>
+                    <div class="kepala-detail-item">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span><strong>Pengalaman:</strong> 25+ tahun di bidang pendidikan Islam dan manajemen madrasah</span>
+                    </div>
+                    <div class="kepala-detail-item">
+                        <i class="bi bi-trophy-fill"></i>
+                        <span><strong>Prestasi:</strong> Kepala Madrasah Berprestasi Nasional Kemenag RI 2021</span>
+                    </div>
+                    <div class="kepala-detail-item">
+                        <i class="bi bi-book-half"></i>
+                        <span><strong>Karya:</strong> Penulis 4 buku pendidikan Islam yang diterbitkan secara nasional</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +303,7 @@
     <div class="container">
         <div class="section-header reveal">
             <div class="section-badge gold-badge"><i class="bi bi-trophy-fill"></i> Prestasi Gemilang</div>
-            <h2 class="section-title">Jejak <span class="accent">Keberhasilan</span> Santri MAN Pandanaran</h2>
+            <h2 class="section-title">Jejak <span class="accent">Keberhasilan</span> Santri MA Sunan Pandanaran</h2>
         </div>
         <div class="news-grid">
             @foreach($prestasi as $post)
@@ -166,7 +330,7 @@
     <div class="container">
         <div class="section-header reveal">
             <div class="section-badge"><i class="bi bi-newspaper"></i> Berita & Agenda</div>
-            <h2 class="section-title">Kabar Terkini <span class="accent">MAN Pandanaran</span></h2>
+            <h2 class="section-title">Kabar Terkini <span class="accent">MA Sunan Pandanaran</span></h2>
             <p class="section-subtitle">Ikuti informasi terbaru seputar kegiatan, pengumuman penting, dan agenda madrasah kami.</p>
         </div>
         <div class="news-grid">
@@ -277,7 +441,7 @@
         <div class="section-badge gold-badge reveal" style="background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.4); color: white; margin-bottom: 1.25rem;">
             <i class="bi bi-pencil-square"></i> PPDB 2026/2027 Telah Dibuka
         </div>
-        <h2 class="reveal">Bergabunglah Bersama Keluarga Besar MAN Pandanaran</h2>
+        <h2 class="reveal">Bergabunglah Bersama Keluarga Besar MA Sunan Pandanaran</h2>
         <p class="reveal">Daftarkan putra-putri Anda sekarang dan raih masa depan cerah bersama generasi unggul madrasah kami.</p>
         <div class="ppdb-info-grid">
             <div class="ppdb-info-card reveal">

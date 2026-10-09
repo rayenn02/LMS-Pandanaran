@@ -111,9 +111,10 @@ class AdminController extends Controller
         return view('admin.posts.index', compact('posts'));
     }
 
-    public function createPost()
+    public function createPost(Request $request)
     {
-        return view('admin.posts.create');
+        $selectedCategory = $request->category ?? 'berita';
+        return view('admin.posts.create', compact('selectedCategory'));
     }
 
     public function storePost(Request $request)
