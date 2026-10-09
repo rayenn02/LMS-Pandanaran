@@ -370,6 +370,42 @@
     </ul>
     @endif
 
+    @if(auth()->user()->isSiswa())
+    <div class="sidebar-section">
+        <div class="sidebar-section-label">Keuangan</div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+            <a href="{{ route('payment.student.bills') }}" class="{{ request()->routeIs('payment.student.*') ? 'active' : '' }}">
+                <i class="bi bi-receipt"></i> Tagihan SPP & Biaya
+            </a>
+        </li>
+    </ul>
+    @endif
+
+    @if(auth()->user()->isBendahara() || auth()->user()->isAdmin())
+    <div class="sidebar-section">
+        <div class="sidebar-section-label">Keuangan & SPP</div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+            <a href="{{ route('payment.finance.index') }}" class="{{ request()->routeIs('payment.finance.index') ? 'active' : '' }}">
+                <i class="bi bi-wallet2"></i> Verifikasi Pembayaran
+            </a>
+        </li>
+        <li class="sidebar-nav-item">
+            <a href="{{ route('payment.finance.generate') }}" class="{{ request()->routeIs('payment.finance.generate') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-plus-fill"></i> Generate Tagihan
+            </a>
+        </li>
+        <li class="sidebar-nav-item">
+            <a href="{{ route('payment.finance.report') }}" class="{{ request()->routeIs('payment.finance.report') ? 'active' : '' }}">
+                <i class="bi bi-bar-chart-line-fill"></i> Laporan Keuangan
+            </a>
+        </li>
+    </ul>
+    @endif
+
 
 
     @if(auth()->user()->isAdmin())
@@ -383,8 +419,13 @@
             </a>
         </li>
         <li class="sidebar-nav-item">
-            <a href="{{ route('admin.posts') }}" class="{{ request()->routeIs('admin.posts*') && request('category') !== 'prestasi' ? 'active' : '' }}">
+            <a href="{{ route('admin.posts') }}" class="{{ request()->routeIs('admin.posts*') && !in_array(request('category'), ['prestasi', 'agenda']) ? 'active' : '' }}">
                 <i class="bi bi-newspaper"></i> Berita & Pengumuman
+            </a>
+        </li>
+        <li class="sidebar-nav-item">
+            <a href="{{ route('admin.posts', ['category' => 'agenda']) }}" class="{{ request()->routeIs('admin.posts*') && request('category') === 'agenda' ? 'active' : '' }}">
+                <i class="bi bi-calendar-event-fill"></i> Kelola Agenda
             </a>
         </li>
         <li class="sidebar-nav-item">
@@ -458,11 +499,15 @@
         </div>
         <div class="topbar-right">
             @php
-                $pendingPPDB = auth()->user()->isAdmin() ? \App\Models\Registration::where('status','pending')->count() : 0;
-                $messagesCount = auth()->user()->isAdmin() ? \App\Models\ContactMessage::count() : 0;
+                $user = auth()->user();
+                $pendingPPDB = $user->isAdmin() ? \App\Models\Registration::where('status','pending')->count() : 0;
+                $messagesCount = $user->isAdmin() ? \App\Models\ContactMessage::count() : 0;
+                $pendingPayments = ($user->isAdmin() || $user->isBendahara()) ? \App\Models\Payment::where('status', 'pending')->count() : 0;
+                $unpaidBills = $user->isSiswa() ? \App\Models\StudentBill::where('student_id', $user->id)->where('status', 'unpaid')->count() : 0;
+                
                 $latestPosts = \App\Models\Post::latest()->take(3)->get();
-                $totalNotifCount = $pendingPPDB + $messagesCount + $latestPosts->count();
-                $userId = auth()->id();
+                $totalNotifCount = $pendingPPDB + $messagesCount + $pendingPayments + $unpaidBills + $latestPosts->count();
+                $userId = $user->id;
             @endphp
 
             <div style="position: relative;">
@@ -495,6 +540,30 @@
                                 <div>
                                     <div class="notif-title">Pesan & Lupa Password</div>
                                     <div class="notif-desc">Ada {{ $messagesCount }} pesan permohonan masuk di Kotak Pesan.</div>
+                                </div>
+                            </a>
+                            @endif
+                        @endif
+
+                        @if(auth()->user()->isAdmin() || auth()->user()->isBendahara())
+                            @if($pendingPayments > 0)
+                            <a href="{{ route('payment.finance.index') }}" class="notif-item" data-notif-id="payments" onclick="markSingleNotifAsRead('payments')">
+                                <div class="notif-icon bg-amber"><i class="bi bi-credit-card-fill"></i></div>
+                                <div>
+                                    <div class="notif-title">Verifikasi Pembayaran</div>
+                                    <div class="notif-desc">Ada {{ $pendingPayments }} pembayaran menunggu verifikasi.</div>
+                                </div>
+                            </a>
+                            @endif
+                        @endif
+
+                        @if(auth()->user()->isSiswa())
+                            @if($unpaidBills > 0)
+                            <a href="{{ route('payment.student.bills') }}" class="notif-item" data-notif-id="bills" onclick="markSingleNotifAsRead('bills')">
+                                <div class="notif-icon bg-red"><i class="bi bi-exclamation-circle-fill" style="color: white;"></i></div>
+                                <div>
+                                    <div class="notif-title">Tagihan Belum Lunas</div>
+                                    <div class="notif-desc">Anda memiliki {{ $unpaidBills }} tagihan aktif yang belum dibayar.</div>
                                 </div>
                             </a>
                             @endif

@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Assignment;
 use App\Models\Quiz;
+use App\Models\StudentBill;
+use App\Models\Payment;
 use App\Models\Post;
 use App\Models\SchoolClass;
 use App\Models\Subject;
@@ -25,6 +27,7 @@ class DashboardController extends Controller
             'admin'     => $this->adminData(),
             'guru'      => $this->guruData($user),
             'siswa'     => $this->siswaData($user),
+            'bendahara' => $this->bendaharaData(),
             default     => [],
         };
 
@@ -41,6 +44,7 @@ class DashboardController extends Controller
             'total_kelas'   => SchoolClass::count(),
             'total_mapel'   => Subject::count(),
             'total_berita'  => Post::count(),
+            'pending_payments' => Payment::where('status', 'pending')->count(),
             'avg_score'     => round($avgScore ?? 0, 1),
             'recent_posts'  => Post::with('author')->latest('published_at')->take(5)->get(),
             'recent_users'  => User::latest()->take(5)->get(),
@@ -81,6 +85,10 @@ class DashboardController extends Controller
         if ($user->class_id) {
             $courseIds = Course::where('class_id', $user->class_id)->pluck('id')->toArray();
         }
+
+        $unpaidBills = StudentBill::where('student_id', $user->id)
+            ->where('status', '!=', 'paid')
+            ->with('feeType')->get();
 
         $recentAttempts = QuizAttempt::where('student_id', $user->id)
             ->with('quiz.course.subject')
@@ -132,6 +140,8 @@ class DashboardController extends Controller
             'courses'             => Course::with(['subject', 'teacher'])
                 ->whereIn('id', $courseIds)->get(),
             'total_courses'       => count($courseIds),
+            'unpaid_bills'        => $unpaidBills,
+            'total_unpaid'        => $unpaidBills->sum('amount'),
             'recent_attempts'     => $recentAttempts,
             'pending_submissions' => AssignmentSubmission::where('student_id', $user->id)
                 ->where('status', 'submitted')->count(),
@@ -144,5 +154,27 @@ class DashboardController extends Controller
         ];
     }
 
+    private function bendaharaData(): array
+    {
+        $pendingPayments = Payment::with(['bill.student', 'bill.feeType'])
+            ->where('status', 'pending')
+            ->latest()->get();
 
+        $thisMonth = now()->month;
+        $thisYear  = now()->year;
+
+        return [
+            'pending_payments'   => $pendingPayments,
+            'total_pending'      => $pendingPayments->count(),
+            'total_income_month' => Payment::where('status', 'success')
+                ->whereMonth('verified_at', $thisMonth)
+                ->whereYear('verified_at', $thisYear)
+                ->sum('amount_paid'),
+            'total_paid_bills'   => StudentBill::where('status', 'paid')->count(),
+            'total_unpaid_bills' => StudentBill::where('status', 'unpaid')->count(),
+            'recent_payments'    => Payment::with(['bill.student', 'bill.feeType'])
+                ->where('status', 'success')
+                ->latest('verified_at')->take(5)->get(),
+        ];
+    }
 }

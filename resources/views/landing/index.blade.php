@@ -363,18 +363,37 @@
             <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 1.5rem; color: #1e293b;">📅 Agenda Mendatang</h3>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
                 @foreach($agenda as $ag)
-                <div style="background: white; border-radius: 14px; padding: 1.25rem; border: 1px solid #e2e8f0; display: flex; gap: 1rem; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <div style="background: linear-gradient(135deg, #7c3aed, #8b5cf6); border-radius: 12px; width: 56px; height: 56px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+                <a href="{{ route('post.show', $ag->slug) }}" class="agenda-card" style="text-decoration: none; background: white; border-radius: 14px; padding: 1.25rem; border: 1px solid #e2e8f0; display: flex; gap: 1rem; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.3s ease; cursor: pointer;">
+                    <div style="background: linear-gradient(135deg, #7c3aed, #8b5cf6); border-radius: 12px; width: 56px; height: 56px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: transform 0.3s ease;" class="agenda-date-badge">
                         <div style="font-size: 1.1rem; font-weight: 800; line-height: 1;">{{ $ag->event_date?->format('d') }}</div>
                         <div style="font-size: 0.6rem; text-transform: uppercase;">{{ $ag->event_date?->isoFormat('MMM') }}</div>
                     </div>
                     <div>
-                        <div style="font-weight: 700; font-size: 0.9rem; color: #1e293b;">{{ $ag->title }}</div>
-                        <div style="font-size: 0.78rem; color: #64748b; margin-top: 2px;">{{ Str::limit($ag->excerpt ?? strip_tags($ag->content), 80) }}</div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #1e293b; transition: color 0.2s;" class="agenda-title">{{ $ag->title }}</div>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px; line-height: 1.4;">{{ Str::limit($ag->excerpt ?? strip_tags($ag->content), 80) }}</div>
+                        <div style="font-size: 0.75rem; color: #7c3aed; font-weight: 700; margin-top: 8px; opacity: 0; transform: translateX(-10px); transition: all 0.3s ease;" class="agenda-read-more">Lihat Detail <i class="bi bi-arrow-right"></i></div>
                     </div>
-                </div>
+                </a>
                 @endforeach
             </div>
+            
+            <style>
+                .agenda-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 12px 25px rgba(124, 58, 237, 0.15) !important;
+                    border-color: #c4b5fd !important;
+                }
+                .agenda-card:hover .agenda-date-badge {
+                    transform: scale(1.08) rotate(-3deg);
+                }
+                .agenda-card:hover .agenda-title {
+                    color: #7c3aed !important;
+                }
+                .agenda-card:hover .agenda-read-more {
+                    opacity: 1 !important;
+                    transform: translateX(0) !important;
+                }
+            </style>
         </div>
         @endif
     </div>

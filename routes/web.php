@@ -8,11 +8,15 @@ use App\Http\Controllers\LmsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExamCardController;
+use App\Http\Controllers\PaymentController;
 
 // ─── LANDING PAGE (Public) ────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('landing');
 Route::get('/berita/{slug}', [HomeController::class, 'show'])->name('post.show');
 Route::post('/kontak', [HomeController::class, 'contact'])->name('contact.send');
+
+// Midtrans Webhook Notification Callback
+Route::post('/pembayaran/midtrans/notification', [PaymentController::class, 'midtransNotification'])->name('payment.midtrans.notification');
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
 Route::get('/pendaftaran', [AuthController::class, 'showRegister'])->name('register');
@@ -75,6 +79,33 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kelas/{courseId}/nilai-ujian', [LmsController::class, 'showExamGrades'])->name('exam_grades');
         Route::post('/kelas/{courseId}/nilai-ujian', [LmsController::class, 'storeExamGrades'])
             ->middleware('role:guru,admin')->name('exam_grades.store');
+    });
+
+    // ─── PAYMENT (Siswa & Bendahara) ──────────────────────────────────────────────
+    Route::prefix('pembayaran')->name('payment.')->group(function () {
+
+        // Student
+        Route::get('/tagihan', [PaymentController::class, 'studentBills'])
+            ->middleware('role:siswa')->name('student.bills');
+        Route::get('/bayar/{billId}', [PaymentController::class, 'showPayForm'])
+            ->middleware('role:siswa')->name('student.pay');
+        Route::post('/bayar/{billId}', [PaymentController::class, 'processPayment'])
+            ->middleware('role:siswa')->name('student.process');
+        Route::get('/konfirmasi/{paymentId}', [PaymentController::class, 'confirmation'])
+            ->middleware('role:siswa')->name('student.confirmation');
+        Route::get('/kwitansi/{paymentId}', [PaymentController::class, 'receipt'])->name('student.receipt');
+
+        // Bendahara / Admin
+        Route::get('/keuangan', [PaymentController::class, 'financeIndex'])
+            ->middleware('role:bendahara,admin')->name('finance.index');
+        Route::post('/keuangan/verifikasi/{paymentId}', [PaymentController::class, 'verifyPayment'])
+            ->middleware('role:bendahara,admin')->name('finance.verify');
+        Route::get('/keuangan/generate-tagihan', [PaymentController::class, 'generateBills'])
+            ->middleware('role:bendahara,admin')->name('finance.generate');
+        Route::post('/keuangan/generate-tagihan', [PaymentController::class, 'storeBills'])
+            ->middleware('role:bendahara,admin')->name('finance.storeBills');
+        Route::get('/keuangan/laporan', [PaymentController::class, 'financeReport'])
+            ->middleware('role:bendahara,admin')->name('finance.report');
     });
 
     // ─── ADMIN ───────────────────────────────────────────────────────────────

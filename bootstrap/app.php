@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
         $middleware->validateCsrfTokens(except: [
-            //
+            'pembayaran/midtrans/notification',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
